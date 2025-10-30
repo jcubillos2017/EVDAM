@@ -1,50 +1,95 @@
-# Welcome to your Expo app 👋
+# React Native + Expo + TypeScript + Expo Router (Login -> Tabs)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Aplicación base que cumple con:
+- **Expo** + **React Native** en **TypeScript (.tsx)**
+- **Expo Router** para navegación (Login -> Tabs)
+- **Validación de contraseña** (debe ser **1234**)
+- **Estado global simple** con **React Context + Hooks** (`useState`, `useEffect`)
+- **Tabs**: Home y Perfil (Perfil muestra el **email** ingresado en el login)
 
-## Get started
+---
 
-1. Install dependencies
 
+---
+
+## Requisitos previos
+- Node.js LTS (recomendado 18.x o 20.x)
+- npm o yarn
+- Android Studio (para emulador Android) o Xcode (para iOS en macOS)
+- Expo CLI (se ejecuta automáticamente con `npx expo`)
+
+---
+
+## Puesta en marcha rápida
+
+> **Opción A**
+1. Descomprime este repositorio en tu equipo.
+2. Instala dependencias:
    ```bash
    npm install
+   # o
+   yarn
    ```
-
-2. Start the app
-
+3. Inicia el proyecto:
    ```bash
    npx expo start
    ```
+4. Abre en:
+   - `a` para Android (emulador o dispositivo con Expo Go)
+   - `i` para iOS (solo macOS)
+   - `w` para Web (si está disponible)
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Estructura de directorios
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+app/
+  _layout.tsx                # Root layout (Stack) + AuthProvider
+  index.tsx                  # Login (email + password). Navega a /(tabs) si password === '1234'
+  (tabs)/
+    _layout.tsx              # Contenedor de Tabs (Home y Perfil)
+    home.tsx                 # Pantalla principal (muestra un reloj con useEffect)
+    profile.tsx              # Muestra el email del login y botón "Cerrar sesión"
+src/
+  context/
+    AuthContext.tsx          # Estado global de autenticación (email, isAuthenticated)
+babel.config.js
+tsconfig.json
+app.json
+package.json
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+- **Login**:
+  - Campos: **Email**, **Password** (seguro)
+  - Botón: **Iniciar sesión**
+  - Reglas:
+    - Si `password !== "1234"` → **"Contraseña Incorrecta"**
+    - Si es correcta → `router.replace('/(tabs)')`
+- **Tabs**:
+  - **Home**: pantalla de bienvenida (con reloj – `useEffect`)
+  - **Perfil**: muestra el **email** del login
+- **Hooks**: `useState` + `useEffect` implementados y tipados en TS.
+- **Buenas prácticas**: componentes desacoplados, tipos explícitos y estilos limpios.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
 
-Join our community of developers creating universal apps.
+## Scripts
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+# Iniciar
+npx expo start
+
+# Android / iOS (requiere entornos nativos configurados)
+npx expo run:android
+npx expo run:ios
+
+# Web (si aplica)
+npm run web
+```
+
+---
+
