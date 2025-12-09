@@ -1,24 +1,36 @@
-import { Tabs } from 'expo-router';
-//import { TabBarIcon } from '../../components/TabBarIcon';
-import React from 'react';
-//import Ionicons from '@expo/vector-icons/Ionicons';
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Tabs, router } from 'expo-router';
+import React, { useEffect } from 'react';
+import { useAuth } from '../../src/context/AuthContext';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+export default function TabsLayout() {
+  const { isAuthenticated, loading } = useAuth();
+  useEffect(() => {
+    if (!loading && !isAuthenticated) router.replace('/');
+  }, [loading, isAuthenticated]);
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  if (loading || !isAuthenticated) return null;
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint, headerShown: false, tabBarButton: HapticTab, }}>
-      <Tabs.Screen name="home" options={{ title: 'Home', tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,}}/> 
-      <Tabs.Screen name="profile" options={{ title: 'Perfil', tabBarIcon: ({ color}) => <IconSymbol size={28} name="person.fill" color={color} />,}} />
-      {/*<Tabs screenOptions={{ headerTitleAlign: 'center' }}> */}
-      {/*<Tabs.Screen name="home" options={{ title: 'Home' }} /> */}
-      
-      
+    <Tabs screenOptions={{ headerTitleAlign: 'center' }}>
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size = 24, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color, size = 24, focused }) => (
+            <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

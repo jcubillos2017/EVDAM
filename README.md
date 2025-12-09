@@ -143,3 +143,144 @@ type Task = {
   completed: boolean;
   createdAt: string; // ISO
 };
+
+
+EVDAM — Expo React Native (Login + TODO con Backend)
+Aplicación móvil hecha con Expo + React Native + TypeScript + Expo Router que implementa:
+Autenticación contra backend (token JWT guardado).
+Rutas protegidas (si el token no existe/expira, te envía a Login).
+TODO List 100% conectado al backend:
+Crear tarea con título + foto + ubicación (reverse geocoding a dirección legible).
+Listar tareas del usuario autenticado.
+Marcar completada / no completada.
+Eliminar tarea.
+Persistencia del token con AsyncStorage.
+Pull-to-refresh en la lista.
+Perfil con email y botón Cerrar sesión.
+
+Video https://ipciisa-my.sharepoint.com/:v:/g/personal/jorge_cubillos_vargas_estudiante_ipss_cl/IQAgwfOs028fRJnS42HCL84fAW7cgINO2l8dQ9ITeuZtXr8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=B4r0wJ
+
+
+🧱 Stack
+
+Expo SDK 54, React Native 0.81, TypeScript
+Expo Router (tabs + stack)
+AsyncStorage (token, email)
+expo-image-picker (cámara)
+expo-location (coordenadas + reverse geocoding)
+expo-clipboard (copiar URL de imagen)
+
+📡 Backend esperado
+
+Base URL configurable por entorno (ver .env). Endpoints usados:
+POST /auth/login → devuelve token
+Body:
+
+{ "email": "jc@ipss.cl", "password": "password123" }
+
+GET /todos → lista TODOs del usuario autenticado
+POST /images → carga de imagen (multipart/form-data, campo file)
+POST /todos → crea TODO
+Body (ejemplo):
+
+{
+  "title": "Comprar café",
+  "photoUri": "https://cdn/mi_foto.jpg",
+  "latitude": -33.45694,
+  "longitude": -70.64827,
+  "address": "Santiago, Región Metropolitana, Chile"
+}
+
+PATCH /todos/:id → { "completed": true | false }
+DELETE /todos/:id
+
+La app muestra la imagen usando la URL que devuelva el backend tras subir el archivo.
+
+⚙️ Configuración de entorno
+
+Incluye .env.example en el repo y NO subas tu .env.
+.env.example
+
+EXPO_PUBLIC_API_URL=https://basic-hono-api.borisbelmarm.workers.dev
+EXPO_PUBLIC_TASKS_PATH=/todos
+EXPO_PUBLIC_IMAGES_PATH=/images
+EXPO_PUBLIC_IMAGE_URL_PROP=photoUri
+EXPO_PUBLIC_UPLOAD_MODE=multipart
+EXPO_PUBLIC_AUTH_LOGIN_PATH=/auth/login
+
+
+Crea tu archivo local .env copiando el ejemplo y ajusta valores si corresponde.
+
+🚀 Puesta en marcha
+# instalar dependencias
+npm install
+
+# (opcional) limpiar caché de Metro
+npx expo start -c
+
+# levantar la app
+npx expo start
+# luego presiona: a (Android), i (iOS en macOS) o abre con Expo Go
+
+
+Credenciales de prueba (si tu backend las tiene creadas):
+
+Email: jc@ipss.cl
+
+Password: password123
+
+📁 Estructura principal
+app/
+  (tabs)/
+    _layout.tsx       # Tabs (Home, Profile)
+    home.tsx          # TODO List (CRUD, cámara, ubicación)
+    profile.tsx       # Email + Cerrar sesión
+  login.tsx           # Pantalla de Login
+
+src/
+  services/
+    config.ts         # Lee variables de entorno EXPO_PUBLIC_*
+    http.ts           # apiFetch (auth header, manejo de 401 → redirige a /login)
+    tasks.ts          # llamadas /todos y /images
+
+🔐 Rutas protegidas
+
+apiFetch (en src/services/http.ts) agrega Authorization: Bearer <token>.
+
+Si el backend responde 401, se limpia el token y se hace router.replace('/login').
+
+📱 Permisos
+
+En app.json / app.config asegúrate de declarar:
+
+iOS infoPlist:
+
+NSCameraUsageDescription
+
+NSLocationWhenInUseUsageDescription
+
+Android permissions:
+
+"CAMERA", "ACCESS_FINE_LOCATION"
+
+🧰 Troubleshooting rápido
+
+No navega a Login tras 401
+Asegura que exista app/login.tsx y reinicia tipado: npx expo start -c.
+
+No sube la imagen
+Verifica que el backend acepte multipart/form-data con campo file y que devuelva una URL accesible.
+
+La dirección/coords “desaparecen” al refrescar
+El backend debe devolver address, latitude y longitude en GET /todos. La app incluye lógica para no “perder” esos datos inmediatamente después de crear, pero el source of truth es el backend.
+
+📝 Scripts útiles
+# reset del proyecto de ejemplo de Expo
+npm run reset-project
+
+
+
+
+
+
+

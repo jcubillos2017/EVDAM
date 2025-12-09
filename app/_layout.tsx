@@ -1,13 +1,21 @@
-import { Stack } from 'expo-router';
-import { AuthProvider } from '../src/context/AuthContext';
-import { TasksProvider } from '../src/context/TasksContext';
+import { Stack, router } from 'expo-router';
+import React, { useEffect } from 'react';
+import { AuthProvider, useAuth } from '../src/context/AuthContext';
+
+function GuardedStack() {
+  const { isAuthenticated, loading } = useAuth();
+  useEffect(() => {
+    if (!loading && !isAuthenticated) router.replace('/');
+  }, [loading, isAuthenticated]);
+
+  if (loading) return null;
+  return <Stack screenOptions={{ headerShown: false }} />;
+}
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <TasksProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-      </TasksProvider>
+      <GuardedStack />
     </AuthProvider>
   );
 }

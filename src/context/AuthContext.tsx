@@ -1,41 +1,61 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { login as apiLogin, logout as apiLogout, getMe, getToken } from '../services/auth';
 
 type AuthContextType = {
   email: string | null;
+  token: string | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
   isAuthenticated: boolean;
-  signIn: (email: string) => void;
-  signOut: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [email, setEmail] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  const signIn = (userEmail: string) => {
-    setEmail(userEmail);
-    setIsAuthenticated(true);
-  };
-
-  const signOut = () => {
-    setEmail(null);
-    setIsAuthenticated(false);
-  };
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // console.log('Auth changed:', { email, isAuthenticated });
-  }, [email, isAuthenticated]);
+    (async () => {
+      const [savedToken, savedEmail] = await Promise.all([
+        getToken(),
+        AsyncStorage.getItem('evdam:user'),
+      ]);
+      if (savedToken) setToken(savedToken);
+      if (savedEmail) setEmail(savedEmail);
+      // (opcional) valida token contra /me
+      if (savedToken) {
+        const me = await getMe().catch(() => null);
+        if (!me) { await apiLogout(); setToken(null); setEmail(null); }
+      }
+      setLoading(false);
+    })();
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ email, isAuthenticated, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const signIn = async (userEmail: string, password: string) => {
+    const t = await apiLogin(userEmail, password);
+    setToken(t);
+    setEmail(userEmail);
+  };
+
+  const signOut = async () => {
+    await apiLogout();
+    setToken(null);
+    setEmail(null);
+  };
+
+  const value = useMemo(() => ({
+    email, token, loading, signIn, signOut, isAuthenticated: !!token,
+  }), [email, token, loading]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 }

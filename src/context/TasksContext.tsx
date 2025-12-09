@@ -91,7 +91,7 @@ export function TasksProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Tomar foto (cámara) o elegir de galería (si camera=false)
+  // Tomar foto 
   const pickOrCapturePhoto = useCallback(async (camera?: boolean) => {
     if (camera) {
       const camPerm = await ImagePicker.requestCameraPermissionsAsync();
