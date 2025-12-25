@@ -283,8 +283,9 @@ npm run reset-project
 Aplicación móvil con **autenticación contra backend** y **Todo List** conectado a API.  
 Construida con **Expo (SDK 54)**, **React Native**, **TypeScript** y **Expo Router**.
 
-> 🎥 **Video demo:** _(agrega aquí tu enlace)_  
-> 💡 Este README incluye un guion breve para el video teórico-demostrativo.
+> 🎥 **Video https://ipciisa-my.sharepoint.com/:f:/g/personal/jorge_cubillos_vargas_estudiante_ipss_cl/IgB0_xjsNCFdSZFVFYtfzT9XAWDbcQWxrWhJxhazjeoSJgM?e=XY4QwH
+
+
 
 ---
 
