@@ -12,7 +12,7 @@ function pickToken(resp: any): string | null {
 }
 
 export async function login(email: string, password: string) {
-  const body = JSON.stringify({ email, password }); // si se usa username, cámbiar aquí
+  const body = JSON.stringify({ email, password }); 
   const resp = await apiFetch<any>(LOGIN_PATH, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

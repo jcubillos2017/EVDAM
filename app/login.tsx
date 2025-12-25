@@ -42,7 +42,7 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      // Hacemos POST al endpoint de login
+      // ****************************Hacemos POST al endpoint de login
       const res = await apiFetch<LoginResponse>(AUTH_LOGIN_PATH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

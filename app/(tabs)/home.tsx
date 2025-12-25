@@ -8,6 +8,24 @@ import * as Clipboard from 'expo-clipboard';
 
 import {createTask, deleteTask, listTasks, updateTaskCompleted, TaskDTO, getTaskImageUrl, getTaskId, getTaskCoords, getTaskAddress} from '../../src/services/tasks';
 
+function StateDemo() {
+  const [count, setCount] = React.useState(0);
+  return (
+    <View style={{ padding: 12, borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 10, marginBottom: 12 }}>
+      <Text style={{ fontWeight: '800', marginBottom: 6 }}>Demo useState</Text>
+      <Text style={{ marginBottom: 8 }}>Contador: {count}</Text>
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Pressable onPress={() => setCount(c => c + 1)} style={{ backgroundColor: '#0ea5e9', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 }}>
+          <Text style={{ color: '#fff', fontWeight: '700' }}>+1</Text>
+        </Pressable>
+        <Pressable onPress={() => setCount(0)} style={{ backgroundColor: '#6b7280', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 }}>
+          <Text style={{ color: '#fff', fontWeight: '700' }}>Reset</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
 type UTask = TaskDTO & { _key: string };
 
 function formatPlacemark(p?: any): string {
@@ -207,7 +225,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top + 8 }]}>
       <Text style={styles.header}>Mis Tareas</Text>
-
+      <StateDemo/>
       <View style={styles.form}>
         <TextInput
           style={styles.input}
