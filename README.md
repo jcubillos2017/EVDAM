@@ -278,6 +278,80 @@ El backend debe devolver address, latitude y longitude en GET /todos. La app inc
 # reset del proyecto de ejemplo de Expo
 npm run reset-project
 
+# EVDAM — Expo React Native + TypeScript + Expo Router
+
+Aplicación móvil con **autenticación contra backend** y **Todo List** conectado a API.  
+Construida con **Expo (SDK 54)**, **React Native**, **TypeScript** y **Expo Router**.
+
+> 🎥 **Video demo:** _(agrega aquí tu enlace)_  
+> 💡 Este README incluye un guion breve para el video teórico-demostrativo.
+
+---
+
+## 🚀 Funcionalidades
+
+- **Login** (POST `/auth/login`) → guarda **token** en AsyncStorage.
+- **Rutas protegidas**: si el token falta/expira (**401**), redirige a **/login**.
+- **Todo List 100% backend**:
+  - **Crear** tarea con **título, foto, ubicación** (lat/lon + dirección).
+  - **Listar**, **marcar completada**, **eliminar**.
+  - Las tareas son **por usuario** autenticado.
+- **Imágenes**: se capturan con cámara y se **suben** (multipart). La app muestra la **URL** devuelta por el servidor.
+- **Pull-to-refresh** en la lista.
+- **Perfil** con email y **Cerrar sesión**.
+
+---
+
+## 🧱 Stack
+
+- Expo SDK 54 • React Native 0.81 • TypeScript  
+- Expo Router (tabs + stack)  
+- **expo-image-picker** (cámara), **expo-location** (coords + reverse geocoding), **expo-clipboard**  
+- AsyncStorage para token/email
+
+---
+
+## 📡 Backend & Endpoints
+
+Base URL configurable (ver `.env`). Endpoints usados:
+
+- **POST** `/auth/login` → `{ token }`
+- **GET** `/todos` → lista tareas del usuario autenticado
+- **POST** `/images` → sube imagen (`multipart/form-data`, campo `file`) ⇒ `{ url }`
+- **POST** `/todos` → crea tarea  
+  ```json
+  {
+    "title": "Comprar café",
+    "photoUri": "https://servidor/mi_foto.jpg",
+    "latitude": -33.45694,
+    "longitude": -70.64827,
+    "address": "Santiago, RM, Chile"
+  }
+
+⚙️ Variables de entorno
+Incluye .env.example
+
+.env.example
+EXPO_PUBLIC_API_URL=https://basic-hono-api.borisbelmarm.workers.dev
+EXPO_PUBLIC_TASKS_PATH=/todos
+EXPO_PUBLIC_IMAGES_PATH=/images
+EXPO_PUBLIC_IMAGE_URL_PROP=photoUri
+EXPO_PUBLIC_UPLOAD_MODE=multipart
+EXPO_PUBLIC_AUTH_LOGIN_PATH=/auth/login
+
+
+
+▶️ Ejecución:
+npm install
+npx expo start -c
+# luego: a (Android), i (iOS en macOS) o Expo Go
+
+Credenciales de prueba están creadas en backend:
+
+Email: jc@ipss.cl
+Password: password123
+
+
 
 
 
